@@ -1,10 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script>
+	//카카오로그인
+	function kakaoLogin() {
 
+		$.ajax({
+			url : '/getKakaoAuthUrl',
+			type : 'post',
+			async : false,
+			dataType : 'text',
+			success : function(res) {
+				location.href = res;
+			}
+		});
+	}
+
+	$(document).ready(
+			function() {
+
+				var kakaoInfo = '${kakaoInfo}';
+
+				if (kakaoInfo != "") {
+					var data = JSON.parse(kakaoInfo);
+
+					alert("카카오로그인 성공 \n accessToken : " + data['accessToken']);
+					alert("user : \n" + "email : " + data['email']
+							+ "\n nickname : " + data['nickname']);
+				}
+			});
+
+</script>
+<body>
+<form action="login" method="post">
+    <table border="1px" align="center">
+        <tr>
+            <th>아이디</th>
+            <td><input type="text" name="id"></td>
+        </tr>
+        <tr>
+            <th>비밀번호</th>
+            <td><input type="password" name="pw"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="login">
+                <input type="reset" value="cancel">
+            </td>
+        </tr>
+        <tr>
+            <td onclick="kakaoLogin();"><a href="javascript:void(0)"><img src="/image/kakao_login_small.png"/></a></td>
+        </tr>
+    </table>
+
+</form>
 </body>
 </html>
