@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-
+<form action="inputSave" method="post">
+    <table border="1" align="center">
+        <tr>
+            <th>아이디</th>
+            <td><input type="text" name="userid"></td>
+        </tr>
+        <tr>
+            <th>비밀번호</th>
+            <td><input type="password" name="userpw" id="userpw"></td>
+        </tr>
+        <tr>
+            <th>비밀번호 확인</th>
+            <td><input type="password" id="userpw2"></td>
+        </tr>
+        <tr>
+            <th>이름</th>
+            <td><input type="text" name="username"></td>
+        </tr>
+        <tr>
+            <th>이메일</th>
+            <td><input type="text" name="useremail"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="send">
+                <input type="reset" value="cancel">
+            </td>
+        </tr>
+    </table>
+</form>
 </body>
 </html>

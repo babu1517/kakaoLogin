@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.http.HttpRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Controller
@@ -26,12 +27,40 @@ public class LoginController {
         return "main";
     }
 
+    @GetMapping(value = "/userInput")
+    public String userInput() {
+        return "userInput";
+    }
+
+    //유저 회원가입
+    @PostMapping(value = "/inputSave")
+    public String inputSave(UserDTO dto) {
+        UserEntity entity = dto.toEntity();
+        loginService.inputSave(entity);
+        return "main";
+    }
+
+    @PostMapping(value = "/loginCheck")
+    public String loginCheck(UserDTO dto, Model model) {
+        String userid = dto.getUserid();
+        String userpw = dto.getUserpw();
+        log.info("usercode: " + dto.getUsercode());
+        int result = loginService.loginCheck(userid, userpw);
+        if (result == 1) {
+            long usercode = dto.getUsercode();
+            model.addAttribute("usercode", usercode);
+            return "home";
+        } else {
+            return "main";
+        }
+    }
+
     //카카오 Rest API 키 접속
     @RequestMapping(value = "/getKakaoAuthUrl")
     public @ResponseBody String getKakaoAuthUrl(HttpServletRequest request) {
         String reqUrl = "https://kauth.kakao.com/oauth/authorize"
-                + "?client_id=21016d43242ea7b653bdff592c5086f9"
-                + "&redirect_uri=http://localhost:8080/oauth_kakao"
+                + "?client_id=fabbcd95969aa1ff7041fb0cdd0a096e"
+                + "&redirect_uri=http://localhost:8686/oauth_kakao"
                 + "&response_type=code";
         return reqUrl;
     }
@@ -41,21 +70,42 @@ public class LoginController {
     public String oauthKakao(@RequestParam(value = "code", required = false) String code, Model model) {
         log.info("카카오 연동정보 조회 코드: " + code);
         String access_Token = loginService.getAccessToken(code);
-        log.info("카카오 연동정보 토큰" + access_Token);
+        log.info("카카오 연동정보 토큰: " + access_Token);
 
-        HashMap<String, Object> userInfo = null;
-        try {
-            userInfo = loginService.getUserInfo(access_Token);
-            log.info("카카오 유저정보 이메일: " + userInfo.get("email"));
-            log.info("카카오 유저정보 닉네임: " + userInfo.get("nickname"));
+        HashMap<String, Object> userInfo = loginService.getUserInfo(access_Token);
+        log.info("카카오 유저정보 이메일: " + userInfo.get("email"));
+        log.info("카카오 유저정보 닉네임: " + userInfo.get("nickname"));
+        log.info("카카오 아이디: " + userInfo.get("kakaoId"));
 
-            JSONObject kakaoInfo = new JSONObject(userInfo);
-            model.addAttribute("kakaoInfo", kakaoInfo);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (userInfo.get("kakaoId") != null) {
+            String kakaoId = userInfo.get("kakaoId").toString();
+            UserEntity entity = loginService.findById(kakaoId);
+
+            if (entity.getKakaoid() != null) {
+                model.addAttribute("entity", entity);
+                log.info("userid: " + entity.getUserid());
+                String userid = entity.getUserid();
+                String userpw = entity.getUserpw();
+                int result = loginService.loginCheck(userid, userpw);
+
+                if (result == 1) {
+                    long usercode = entity.getUsercode();
+                    model.addAttribute("usercode", usercode);
+                    return "home";
+                }
+                else {
+                    model.addAttribute("userInfo", userInfo);
+                    return "userInput";
+                }
+
+            } else {
+
+                return "userInput";
+            }
+
         }
+        return "/";
 
-
-        return "/redirect:/";
     }
 }
+

@@ -1,11 +1,19 @@
 package com.block.kakaoLogin.Login;
 
-import java.io.IOException;
+import org.springframework.data.jpa.repository.Query;
+
 import java.util.HashMap;
 
 
 public interface LoginService {
 
     public String getAccessToken(String authorize_code);
-    public HashMap<String, Object> getUserInfo(String access_Token) throws IOException;
+    public HashMap<String, Object> getUserInfo(String access_Token);
+
+    void inputSave(UserEntity entity);
+
+
+    UserEntity findById(String kakaoId);
+
+    int loginCheck(String userid, String userpw);
 }
