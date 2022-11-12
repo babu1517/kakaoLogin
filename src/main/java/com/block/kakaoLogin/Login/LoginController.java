@@ -76,35 +76,39 @@ public class LoginController {
         log.info("카카오 유저정보 이메일: " + userInfo.get("email"));
         log.info("카카오 유저정보 닉네임: " + userInfo.get("nickname"));
         log.info("카카오 아이디: " + userInfo.get("kakaoId"));
-
-        if (userInfo.get("kakaoId") != null) {
-            String kakaoId = userInfo.get("kakaoId").toString();
+        String kakaoId = userInfo.get("kakaoId").toString();
+        log.info("카톡아이디"+kakaoId);
+        //회원가입 된 kakaoid가 있는지 확인
+        if (kakaoId != null) {
             UserDTO dto = loginService.findById(kakaoId);
             log.info("dto 카톡아이디: "+dto.getKakaoid());
+            //회원가입 된 kakaoid가 있으면 로그인시키기
             if (dto.getKakaoid() != null) {
                 model.addAttribute("entity", dto);
                 log.info("userid: " + dto.getUserid());
                 String userid = dto.getUserid();
                 String userpw = dto.getUserpw();
                 int result = loginService.loginCheck(userid, userpw);
-
+                //kakaoid 연동 확인,유저코드 발급
                 if (result == 1) {
                     long usercode = dto.getUsercode();
                     model.addAttribute("usercode", usercode);
                     return "home";
                 }
-                else {
-                    model.addAttribute("userInfo", userInfo);
-                    return "userInput";
-                }
-
             }
+            //가입된 kakaoid가 없음 카카오 아이디로 회원가입 하세요.
             else if(dto.getKakaoid()==null) {
             String massage = "등록된 아이디가 없습니다. 회원가입 후 이용해주세요.";
             model.addAttribute("massage", massage);
+            model.addAttribute("kakaoId",kakaoId);
                 return "userInput";
             }
 
+        }
+        else {
+            String massage = "카카오톡 아이디가 확인되지 않습니다. 회원가입 후 이용해주세요.";
+            model.addAttribute("massage", massage);
+            return "userInput";
         }
         return "/";
 
