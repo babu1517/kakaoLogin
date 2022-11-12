@@ -2,26 +2,26 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <form action="inputSave" method="post">
-    <table border="1" align="center">
+    <table border="1" align="center" width="600">
         <tr>
             <th>아이디</th>
-            <td><input type="text" name="userid"></td>
+            <td><input type="text" name="userid" th:value="${massage}" size="50"></td>
         </tr>
         <tr>
             <th>비밀번호</th>
-            <td><input type="password" name="userpw" id="userpw"></td>
+            <td><input type="password" name="userpw" id="userpw" size="50"></td>
         </tr>
         <tr>
             <th>비밀번호 확인</th>
-            <td><input type="password" id="userpw2"></td>
+            <td><input type="password" id="userpw2" size="50"></td>
         </tr>
         <tr>
             <th>이름</th>
-            <td><input type="text" name="username"></td>
+            <td><input type="text" name="username" size="50"></td>
         </tr>
         <tr>
             <th>이메일</th>
-            <td><input type="text" name="useremail"></td>
+            <td><input type="text" name="useremail" size="50"></td>
         </tr>
         <tr>
             <td colspan="2">

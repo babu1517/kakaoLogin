@@ -79,17 +79,17 @@ public class LoginController {
 
         if (userInfo.get("kakaoId") != null) {
             String kakaoId = userInfo.get("kakaoId").toString();
-            UserEntity entity = loginService.findById(kakaoId);
-
-            if (entity.getKakaoid() != null) {
-                model.addAttribute("entity", entity);
-                log.info("userid: " + entity.getUserid());
-                String userid = entity.getUserid();
-                String userpw = entity.getUserpw();
+            UserDTO dto = loginService.findById(kakaoId);
+            log.info("dto 카톡아이디: "+dto.getKakaoid());
+            if (dto.getKakaoid() != null) {
+                model.addAttribute("entity", dto);
+                log.info("userid: " + dto.getUserid());
+                String userid = dto.getUserid();
+                String userpw = dto.getUserpw();
                 int result = loginService.loginCheck(userid, userpw);
 
                 if (result == 1) {
-                    long usercode = entity.getUsercode();
+                    long usercode = dto.getUsercode();
                     model.addAttribute("usercode", usercode);
                     return "home";
                 }
@@ -98,8 +98,10 @@ public class LoginController {
                     return "userInput";
                 }
 
-            } else {
-
+            }
+            else if(dto.getKakaoid()==null) {
+            String massage = "등록된 아이디가 없습니다. 회원가입 후 이용해주세요.";
+            model.addAttribute("massage", massage);
                 return "userInput";
             }
 

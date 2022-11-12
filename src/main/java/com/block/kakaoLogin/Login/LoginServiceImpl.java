@@ -124,8 +124,16 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public UserEntity findById(String kakaoId) {
-        return  userRepository.kakao(kakaoId);
+    public UserDTO findById(String kakaoId) {
+        UserDTO dto = new UserDTO();
+        if(dto != null){
+            return dto;
+        }
+        else{
+            dto.setKakaoid("null");
+            return dto;
+        }
+
     }
 
     @Override

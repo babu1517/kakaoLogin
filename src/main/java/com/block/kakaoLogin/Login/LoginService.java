@@ -13,7 +13,7 @@ public interface LoginService {
     void inputSave(UserEntity entity);
 
 
-    UserEntity findById(String kakaoId);
+    UserDTO findById(String kakaoId);
 
     int loginCheck(String userid, String userpw);
 }
